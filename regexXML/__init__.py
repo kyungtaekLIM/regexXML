@@ -1,8 +1,8 @@
 import re
 
-def xml_tag_pattern(tag):
+def tag_regex(tag):
     '''
-    Return a ompiled regex pattern for parsing XML by a given tag name.
+    Return a regular expression object for parsing XML by a given tag name.
     If elements with a same tag name exist on different levels,
     innermost elements will be parsed.
     '''
