@@ -1,7 +1,5 @@
 # regexXML
 
-`regexXML` provides a python function that compile a regular expression object for parsing elements from XML by a given tag name.
-Python XML libaries such as `lxml` are extremely memory-demanding.
-I wrote `regexXML` to parse very very big XML files in a memory-efficient manner.
-
-
+`regexXML` provides python functions for parsing XML.
+One can extract elements from XML by a tag name, and parse attributes of those elements with `regexXML`.
+As python XML libaries such as `lxml` are extremely memory-demanding,`regexXML` will help parse very very big XML files in a memory-efficient manner.
