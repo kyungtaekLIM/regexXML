@@ -1,0 +1,195 @@
+from regexXML import parse_attr, compile_tag_regex
+
+xml = '''
+<PubmedArticle>
+    <MedlineCitation Status="Publisher" Owner="NLM">
+        <PMID Version="1">28114604</PMID>
+        <DateCreated>
+            <Year>2017</Year>
+            <Month>01</Month>
+            <Day>23</Day>
+        </DateCreated>
+        <DateRevised>
+            <Year>2017</Year>
+            <Month>02</Month>
+            <Day>08</Day>
+        </DateRevised>
+        <Article PubModel="Print-Electronic">
+            <Journal>
+                <ISSN IssnType="Electronic">2374-2445</ISSN>
+                <JournalIssue CitedMedium="Internet">
+                    <PubDate>
+                        <Year>2017</Year>
+                        <Month>Jan</Month>
+                        <Day>19</Day>
+                    </PubDate>
+                </JournalIssue>
+                <Title>JAMA oncology</Title>
+                <ISOAbbreviation>JAMA Oncol</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>Topical Imiquimod Plus Nab-paclitaxel for Breast Cancer Cutaneous Metastases: A Phase 2 Clinical Trial.</ArticleTitle>
+            <ELocationID EIdType="doi" ValidYN="Y">10.1001/jamaoncol.2016.6007</ELocationID>
+            <Abstract>
+                <AbstractText Label="Importance" NlmCategory="UNASSIGNED">Salvage chemotherapy for recurrent chest wall lesions in breast cancer results in response rates of 20% to 30%. Preclinical studies showed significant disease regression could be induced in murine chest wall mammary cancers with a topical toll-like receptor (TLR)-7 agonist, imiquimod.</AbstractText>
+                <AbstractText Label="Objective" NlmCategory="UNASSIGNED">To evaluate the safety and objective response rate (ORR) of imiquimod in combination with systemic albumin bound paclitaxel in treatment-refractory breast cancer of the chest wall.</AbstractText>
+                <AbstractText Label="Design, Setting, and Particpants" NlmCategory="UNASSIGNED">A single arm phase 2 clinical trial of 15 patients with breast cancer previously treated in an academic medical center setting between 2009 and 2012 for chest wall disease that had recurred.</AbstractText>
+                <AbstractText Label="Interventions" NlmCategory="UNASSIGNED">Imiquimod cream, 5%, was applied topically to a designated target lesion once per day for 4 consecutive days on days 1 through 4, 8 through 11, 15 through 18, and 22 through 25 of a 28-day cycle, for 12 weeks. Albumin bound paclitaxel, 100 mg/m2, was given intravenously on days 1, 8, and 15, and repeated every 28 days over the 12-week period.</AbstractText>
+                <AbstractText Label="Main Outcomes and Measures" NlmCategory="UNASSIGNED">The primary endpoint was safety and ORR. Secondary endpoints included the generation of tumor-infiltrating lymphocytes and modulation of immune cell populations.</AbstractText>
+                <AbstractText Label="Results" NlmCategory="UNASSIGNED">The median age at baseline of the 15 study participants was 54 years (range, 46-92 years). Fourteen patients were evaluable. Combination therapy was associated with low-grade toxic effects. Of 358 adverse events 330 (92%) were grades 1 and 2. Five (36%) patients achieved a compete response and another 5 (36%) were partial responders for an overall response rate of 72% (10 of 14). The response duration was limited. Pretreatment levels of programmed death-1 (PD-1)+ peripheral blood T cells (PD-1+ cluster of differentiation [CD]4+; 95% CI, 2.68-6.63; P &lt; .001 and PD-1+CD8+; 95% CI, 1.13-8.35; P = .01) and monocytic myeloid derived suppressor cells (mMDSC) (95% CI, 3.62-12.74; P = .001) greater than controls predicted suboptimal clinical response.</AbstractText>
+                <AbstractText Label="Conclusions and Relevance" NlmCategory="UNASSIGNED">Chemoimmunomodulation with a TLR-7 agonist and albumin bound paclitaxel is effective in inducing disease regression in treatment-refractory breast cancer chest wall metastases but responses are short-lived. Preexisting levels of cells indicating either T-cell exhaustion or systemic immunosuppression may be markers of selection for responsive patients.</AbstractText>
+                <AbstractText Label="Trial Registration" NlmCategory="UNASSIGNED">Clinicaltrials.gov Identifier: NCT00821964.</AbstractText>
+            </Abstract>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Salazar</LastName>
+                    <ForeName>Lupe G</ForeName>
+                    <Initials>LG</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Tumor Vaccine Group, Center for Translational Medicine in Women's Health, University of Washington, Seattle.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Lu</LastName>
+                    <ForeName>Hailing</ForeName>
+                    <Initials>H</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Immune Design, Seattle, Washington.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Reichow</LastName>
+                    <ForeName>Jessica L</ForeName>
+                    <Initials>JL</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Tumor Vaccine Group, Center for Translational Medicine in Women's Health, University of Washington, Seattle.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Childs</LastName>
+                    <ForeName>Jennifer S</ForeName>
+                    <Initials>JS</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Tumor Vaccine Group, Center for Translational Medicine in Women's Health, University of Washington, Seattle.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Coveler</LastName>
+                    <ForeName>Andrew L</ForeName>
+                    <Initials>AL</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Tumor Vaccine Group, Center for Translational Medicine in Women's Health, University of Washington, Seattle.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Higgins</LastName>
+                    <ForeName>Doreen M</ForeName>
+                    <Initials>DM</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Tumor Vaccine Group, Center for Translational Medicine in Women's Health, University of Washington, Seattle.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Waisman</LastName>
+                    <ForeName>James</ForeName>
+                    <Initials>J</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Medical Oncology, City of Hope, Durante, California.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Allison</LastName>
+                    <ForeName>Kimberly H</ForeName>
+                    <Initials>KH</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Department of Pathology, Stanford University, Stanford, California.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Dang</LastName>
+                    <ForeName>Yushe</ForeName>
+                    <Initials>Y</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Tumor Vaccine Group, Center for Translational Medicine in Women's Health, University of Washington, Seattle.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Disis</LastName>
+                    <ForeName>Mary L</ForeName>
+                    <Initials>ML</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Tumor Vaccine Group, Center for Translational Medicine in Women's Health, University of Washington, Seattle.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <DataBankList CompleteYN="Y">
+                <DataBank>
+                    <DataBankName>ClinicalTrials.gov</DataBankName>
+                    <AccessionNumberList>
+                        <AccessionNumber>NCT00821964</AccessionNumber>
+                    </AccessionNumberList>
+                </DataBank>
+            </DataBankList>
+            <PublicationTypeList>
+                <PublicationType UI="">Journal Article</PublicationType>
+            </PublicationTypeList>
+            <ArticleDate DateType="Electronic">
+                <Year>2017</Year>
+                <Month>01</Month>
+                <Day>19</Day>
+            </ArticleDate>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>United States</Country>
+            <MedlineTA>JAMA Oncol</MedlineTA>
+            <NlmUniqueID>101652861</NlmUniqueID>
+            <ISSNLinking>2374-2437</ISSNLinking>
+        </MedlineJournalInfo>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2017</Year>
+                <Month>1</Month>
+                <Day>24</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2017</Year>
+                <Month>1</Month>
+                <Day>24</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2017</Year>
+                <Month>1</Month>
+                <Day>24</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>aheadofprint</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pubmed">28114604</ArticleId>
+            <ArticleId IdType="pii">2598488</ArticleId>
+            <ArticleId IdType="doi">10.1001/jamaoncol.2016.6007</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+</PubmedArticle>
+'''
+
+AuthorList_re = compile_tag_regex("AuthorList")
+LastName_re = compile_tag_regex("LastName")
+Author_re = compile_tag_regex("Author")
+
+AuthorList = AuthorList_re.search(xml)
+if AuthorList:
+    for Author in Author_re.finditer(AuthorList.group()):
+        attr = parse_attr(Author.group("attr"))
+        LastName = LastName_re.search(Author.group())
+        if LastName:
+            print("%s: %s" % (LastName.group("inner"), attr.get("ValidYN")))
+
+
