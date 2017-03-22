@@ -1,6 +1,7 @@
 import re
 from collections import OrderedDict
 
+__version__ = "0.4.1"
 
 class Attr(OrderedDict):
 
