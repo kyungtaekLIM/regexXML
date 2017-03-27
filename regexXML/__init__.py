@@ -8,6 +8,7 @@ class Attr(OrderedDict):
     attr_regex = re.compile(r"([\w\:]+?)\s*=\s*(\"[^\"\'<>]+?\"|\'[^<>\']+?\')")
     
     def __init__(self, attr_str):
+        super(Attr, self).__init__()
         for hit in self.attr_regex.finditer(attr_str):
             value = hit.group(2)
             if (value[0] == "\"" and value[-1] == "\"") or (value[0] == "\'" and value[-1] == "\'"):
