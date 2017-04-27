@@ -36,32 +36,38 @@ uniprot_xml = """
 gene_re = Tag("gene")
 name_re = Tag("name")
 
-i = 0
+# search "gene" tag that comes first.
 gene = gene_re.search(uniprot_xml)
 
-print("# print gene element")
+# get the whole XML of the gene element.
+print("# print the first gene element")
 print("%s\n" % gene.group())
 
-print("# print inner-xml of gene element")
+# get inner-XML of the gene element.
+print("# print inner-XML of the gene element")
 print("%s\n" % gene.group("inner"))
 
-print("# print attribute string of gene element")
+# get the attribute string of the gene element.
+# Return None, if it does not exist.
+print("# print attribute string of the gene element")
 print("%s\n" % gene.group("attr"))
 
-for name in name_re.finditer(uniprot_xml):
-    print("# print name element")
+# iterate over name elements in the gene element.
+for name in name_re.finditer(gene.group()):
+    print("# print a name element")
     print("%s\n" % name.group())
 
-    print("# print inner-xml of name element")
+    print("# print inner-XML of the name element")
     print("%s\n" % name.group("inner"))
 
-    print("# print attribute string of name element")
+    print("# print the attribute string of the name element")
     print("%s\n" % name.group("attr"))
     
+    # parse the attribute string into OrderedDict.
     attr = Attr(name.group("attr"))
-    print("# print parsed attributes")
 
+    # get key-value pairs of the attribute.
+    print("# print parsed attributes")
     for k, v in attr.items():
         print("key : %s\nvalue : %s\n" % (k, v))
-
 
