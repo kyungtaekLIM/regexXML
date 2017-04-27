@@ -1,7 +1,7 @@
 import re
 from collections import OrderedDict
 
-__version__ = "0.4.2"
+__version__ = "0.4.3"
 
 class Attr(OrderedDict):
 
@@ -9,12 +9,13 @@ class Attr(OrderedDict):
     
     def __init__(self, attr_str):
         super(Attr, self).__init__()
-        for hit in self.attr_regex.finditer(attr_str):
-            value = hit.group(2)
-            if (value[0] == "\"" and value[-1] == "\"") or (value[0] == "\'" and value[-1] == "\'"):
-                self[hit.group(1)] = value[1:-1]
-            else:
-                self[hit.group(1)] = value
+        if attr_str:
+            for hit in self.attr_regex.finditer(attr_str):
+                value = hit.group(2)
+                if (value[0] == "\"" and value[-1] == "\"") or (value[0] == "\'" and value[-1] == "\'"):
+                    self[hit.group(1)] = value[1:-1]
+                else:
+                    self[hit.group(1)] = value
 
 
 class Tag:
