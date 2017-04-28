@@ -9,7 +9,7 @@ from regexXML import Attr, Tag
 
 Here is an example of parsing a simple XML from Uniprot database (http://uniprot.org) using regexXML.
 
-<pre>python
+```python
 uniprot_xml = """
 <?xml version="1.0" ?>
 <uniprot schemaLocation="http://uniprot.org/uniprot http://www.uniprot.org/support/docs/uniprot.xsd">
@@ -80,4 +80,4 @@ for name in name_re.finditer(gene.group()):
     print("# print parsed attributes")
     for k, v in attr.items():
         print("key : %s\nvalue : %s\n" % (k, v))
-</pre>
+```
