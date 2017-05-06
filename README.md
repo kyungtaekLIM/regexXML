@@ -1,15 +1,16 @@
 # regexXML
 
-`regexXML` provides python functions for parsing XML.
+`regexXML` is a pure Python library for parsing XML files.
 One can extract elements from XML by a tag name, and parse attributes of those elements with `regexXML`.
-As python XML libaries such as `lxml` are extremely memory-demanding,`regexXML` will help parse very very big XML files in a memory-efficient manner.
-from regexXML import Attr, Tag
+As python XML libaries such as `lxml` are extremely memory-demanding,`regexXML` will help parse very very large XML files in a memory-efficient manner.
 
 ## Examples
 
-Here is an example of parsing a simple XML from Uniprot database (http://uniprot.org) using regexXML.
+Here is an example of parsing an XML document from Uniprot database (http://uniprot.org) using regexXML.
 
 ```python
+from regexXML import Attr, Tag
+
 uniprot_xml = """
 <?xml version="1.0" ?>
 <uniprot schemaLocation="http://uniprot.org/uniprot http://www.uniprot.org/support/docs/uniprot.xsd">
