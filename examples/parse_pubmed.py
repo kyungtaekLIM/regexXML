@@ -1,15 +1,26 @@
 from regexXML import Attr, Tag
 
+# make Tag objects
 AuthorList_re = Tag("AuthorList")
-LastName_re = Tag("LastName")
 Author_re = Tag("Author")
+LastName_re = Tag("LastName")
+ForeName_re = Tag("ForeName")
 
-i = 0
-for AuthorList in AuthorList_re.finditer(open("pubmed1.xml").read()):
-    print("New author list")
-    for Author in Author_re.finditer(AuthorList.group()):
-        LastName = LastName_re.search(Author.group("inner"))
-        if LastName:
-            print("%s: %s" % (LastName.group("inner"), Attr(Author.group("attr")).get("ValidYN")))
-            i += 1
-print(i)
+# search the fisrt AuthorList tag
+AuthorList = AuthorList_re.search(open("pubmed1.xml").read())
+
+print("Author List")
+# find Author tags
+for Author in Author_re.finditer(AuthorList.group("inner")):
+    # search LastName and ForeName tags
+    LastName = LastName_re.search(Author.group("inner"))
+    ForeName = ForeName_re.search(Author.group("inner"))
+    print("%s %s (ValidYN: %s)" % 
+        (
+            ForeName.group("inner"),
+            LastName.group("inner"),
+            # parse attributes of an Auther tag and
+            # get the value of ValidYN
+            Attr(Author.group("attr")).get("ValidYN")
+        )
+    )
