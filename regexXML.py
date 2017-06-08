@@ -41,6 +41,7 @@ class Tag:
         xml = ""
 
         chunk = fileobj.read(chunk_size)
+
         while chunk:
             xml += chunk
 
@@ -53,9 +54,6 @@ class Tag:
                 xml = xml[end_index:]
 
             chunk = fileobj.read(chunk_size)
-        
-        for m in self.pattern.finditer(xml):
-            yield m
 
     def finditer(self, string):
         for g in self.pattern.finditer(string):
