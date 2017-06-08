@@ -1,16 +1,16 @@
 import re
 from collections import OrderedDict
 
-__version__ = "0.4.3"
+__version__ = "0.4.4"
 
 class Attr(OrderedDict):
 
-    attr_regex = re.compile(r"([\w\:]+?)\s*=\s*(\"[^\"\'<>]+?\"|\'[^<>\']+?\')")
+    pattern = re.compile(r"([\w\:]+?)\s*=\s*(\"[^\"\'<>]+?\"|\'[^<>\']+?\')")
     
     def __init__(self, attr_str):
         super(Attr, self).__init__()
         if attr_str:
-            for hit in self.attr_regex.finditer(attr_str):
+            for hit in self.pattern.finditer(attr_str):
                 value = hit.group(2)
                 if (value[0] == "\"" and value[-1] == "\"") or (value[0] == "\'" and value[-1] == "\'"):
                     self[hit.group(1)] = value[1:-1]
@@ -22,10 +22,10 @@ class Tag:
 
     def __init__(self, tag):
         self.tag = tag
-        self.tag_regex = self.compile_tag_regex(tag)   
+        self.pattern = self.get_pattern(tag)   
 
     @classmethod
-    def compile_tag_regex(cls, tag):
+    def get_pattern(cls, tag):
         '''
         Return a regular expression object for parsing XML by a given tag name.
         If elements with a same tag name exist on different levels,
@@ -45,7 +45,7 @@ class Tag:
             xml += chunk
 
             end_index = 0
-            for m in self.finditer(xml):
+            for m in self.pattern.finditer(xml):
                 end_index = m.end()
                 yield m
             
@@ -54,11 +54,11 @@ class Tag:
 
             chunk = fileobj.read(chunk_size)
         
-        for m in self.finditer(xml):
+        for m in self.pattern.finditer(xml):
             yield m
 
     def finditer(self, string):
-        for g in self.tag_regex.finditer(string):
+        for g in self.pattern.finditer(string):
             yield g
     
     def search_from_file(self, fileobj, chunk_size=300000):
@@ -66,7 +66,7 @@ class Tag:
             return m
 
     def search(self, string):
-        return self.tag_regex.search(string)
+        return self.pattern.search(string)
 
 
 
