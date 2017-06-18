@@ -1,17 +1,18 @@
 import os
+import gzip
 from regexXML import Tag
 
 entry_re = Tag("entry")
 gene_re = Tag("gene")
 name_re = Tag("name")
 
-filename = "uniprot_sprot.xml"
+filename = "uniprot_sprot.xml.gz"
 
 if not os.path.isfile(filename):
     err_tmpl = "%s was not found. Download ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.xml.gz"
     raise IOError(err_tmpl % filename)
 
-with open(filename, "r") as f:
+with gzip.open(filename, "r") as f:
     i = 0
     for entry in entry_re.finditer_from_file(f):
         for gene in gene_re.finditer(entry.group("inner")):

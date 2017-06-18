@@ -13,8 +13,9 @@ print("Author List")
 # find Author tags
 for Author in Author_re.finditer(AuthorList.group("inner")):
     # search LastName and ForeName tags
-    LastName = LastName_re.search(Author.group("inner"))
-    ForeName = ForeName_re.search(Author.group("inner"))
+    Author_inner = Author.group("inner")
+    LastName = LastName_re.search(Author_inner)
+    ForeName = ForeName_re.search(Author_inner)
     print("%s %s (ValidYN: %s)" % 
         (
             ForeName.group("inner"),
