@@ -1,7 +1,7 @@
 import re
 from collections import OrderedDict
 
-__version__ = "0.4.6"
+__version__ = "0.4.7"
 
 
 class Attr(OrderedDict):
@@ -31,7 +31,7 @@ class Tag:
         '''
         
         return re.compile(
-            r"<%s(?: *| +(?P<attr>[^><]*?))(?:>(?P<inner>(?!<%s )(?!<%s>).*?)</%s>|\/>)" % (tag, tag, tag, tag),
+            r"<%s(?: *| +(?P<attr>[^&<]*))(?:>(?P<inner>(?:(?!<%s[ >]).)*?)</%s>|></%s>|\/>)" % (tag, tag, tag, tag),
             re.DOTALL
         )
 
