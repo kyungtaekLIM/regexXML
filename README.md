@@ -30,6 +30,14 @@ name_re = Tag("name")
 entry_re = Tag("entry")
 ```
 
+If you know that the tags of interest are not nested by the same tag name, set `nested=False`. This will greatly improve speed.
+
+```python
+gene_re = Tag("gene", nested=False)
+name_re = Tag("name", nested=False)
+entry_re = Tag("entry", nested=False)
+```
+
 To get a single tag match from an XML string, use `search`, which will give you a match object. Once you get a match object, group() will give you the matched string. Its attribute and inner-XML can be extracted by group("attr") and group("inner"), respectively.
 
 ```python
@@ -105,8 +113,9 @@ uniprot_xml = """
 </uniprot>
 """
 
-gene_re = Tag("gene")
-name_re = Tag("name")
+# we know that tags are not nested by the same name.
+gene_re = Tag("gene", nested=False)
+name_re = Tag("name", nested=False)
 
 # search "gene" tag that comes first.
 gene = gene_re.search(uniprot_xml)
@@ -146,69 +155,28 @@ for name in name_re.finditer(gene.group("inner")):
 
 ### 2) Parsing a huge XML file iteratively.
 
-An example of parsing a huge Uniport XML file (5.9G) downloaded from  ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.xml.gz in a memory-efficient manner.
-
-```python
-from regexXML import Tag
-
-entry_re = Tag("entry")
-gene_re = Tag("gene")
-name_re = Tag("name")
-
-filename = "uniprot_sprot.xml"
-
-with open(filename, "r") as f:
-    i = 0
-    for entry in entry_re.finditer_from_file(f):
-        for gene in gene_re.finditer(entry.group("inner")):
-            name = name_re.search(gene.group("inner"))
-            if name:
-                i += 1
-
-    print("# of gene names: %s" % i)
-```
+[An example of parsing a huge Uniport XML file](https://github.com/kyungtaekLIM/regexXML/blob/master/examples/iterparse_uniprot.py) (5.9G) downloaded from  ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.xml.gz in a memory-efficient manner.
 
 I compared CPU time and maximum memory usage required to run this script with [the `lxml` equivalent](https://github.com/kyungtaekLIM/regexXML/blob/master/examples/iterparse_uniprot_lxml.py). `regexXML` is superior to `lxml`.
 
 | Library   | CPU Time (s) | Max Memory |
 | ----------| ------------ | ---------- |
-| regexXML  | 150          | 139M       |
-| lxml      | 191          | 239M       |
+| regexXML  | 146          | 146M       |
+| lxml      | 176          | 338M       |
 
 
 
 ### 3) parsing a gzipped XML file iteratively.
 
-If you want to parse the above XML file without decompressing it, just open the file using `gzip` library.
-
-```python
-import gzip
-from regexXML import Tag
-
-entry_re = Tag("entry")
-gene_re = Tag("gene")
-name_re = Tag("name")
-
-filename = "uniprot_sprot.xml.gz"
-
-with gzip.open(filename, "r") as f:
-    i = 0
-    for entry in entry_re.finditer_from_file(f):
-        for gene in gene_re.finditer(entry.group("inner")):
-            name = name_re.search(gene.group("inner"))
-            if name:
-                i += 1
-
-    print("# of gene names: %s" % i)
-```
+If you want to parse the above XML file without decompressing it, just [open the file using `gzip` library](https://github.com/kyungtaekLIM/regexXML/blob/master/examples/iterparse_uniprot_gzip.py).
 
 I also compared CPU time and maximum memory usage with [the `lxml` equivalent](https://github.com/kyungtaekLIM/regexXML/blob/master/examples/iterparse_uniprot_lxml_gzip.py). Again, `regexXML` is superior to `lxml`.
 
 
 | Library   | CPU Time (s) | Max Memory |
 | ----------| ------------ | ---------- |
-| regexXML  | 167          | 150M       |
-| lxml      | 214          | 243M       |
+| regexXML  | 166          | 249M       |
+| lxml      | 225          | 339M       |
 
 
 
