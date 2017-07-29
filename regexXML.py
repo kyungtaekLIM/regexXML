@@ -1,7 +1,7 @@
 import re
 from collections import OrderedDict
 
-__version__ = "0.4.6"
+__version__ = "0.5.0"
 
 
 class Attr(OrderedDict):
@@ -18,40 +18,50 @@ class Attr(OrderedDict):
 
 class Tag:
 
-    def __init__(self, tag):
+    def __init__(self, tag, nested=True):
         self.tag = tag
-        self.pattern = self.get_pattern(tag)   
+        self.pattern = self.get_pattern(tag, nested=nested) 
 
     @classmethod
-    def get_pattern(cls, tag):
+    def get_pattern(cls, tag, nested=True):
         '''
         Return a regular expression object for parsing XML by a given tag name.
-        If elements with a same tag name exist on different levels,
-        innermost elements will be parsed.
+        If elements with a same tag exist on different levels, the innermost
+        element will be parsed. If the tag does not form a nested structure,
+        set nested=False for speed.
         '''
-        
-        return re.compile(
-            r"<%s(?: *| +(?P<attr>[^><]*?))(?:>(?P<inner>(?!<%s )(?!<%s>).*?)</%s>|\/>)" % (tag, tag, tag, tag),
-            re.DOTALL
-        )
+
+        if nested:
+            return re.compile(
+                r"<%s(?: *| +(?P<attr>[^&<]*))(?:>(?P<inner>(?:(?!<%s[ >]).)*?)</%s>|></%s>|\/>)" % (tag, tag, tag, tag),
+                re.DOTALL
+            )
+        else:
+           return re.compile(
+                r"<%s(?: *| +(?P<attr>[^&<]*))(?:>(?P<inner>.*?)</%s>|\/>)" % (tag, tag),
+                re.DOTALL
+            )
 
     def finditer_from_file(self, fileobj, chunk_size=300000):
-        xml = ""
 
-        chunk = fileobj.read(chunk_size)
+        xml = fileobj.read(chunk_size)
 
-        while chunk:
-            xml += chunk
+        while True:
 
             end_index = 0
             for m in self.pattern.finditer(xml):
                 end_index = m.end()
                 yield m
             
-            if end_index:
-                xml = xml[end_index:]
-
             chunk = fileobj.read(chunk_size)
+
+            if chunk:
+                if end_index:
+                    xml = xml[end_index:] + chunk
+                else:
+                    xml += chunk
+            else:
+                break
 
     def finditer(self, string):
         for g in self.pattern.finditer(string):
