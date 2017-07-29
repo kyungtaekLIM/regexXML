@@ -12,9 +12,9 @@ with gzip.open(filename) as f:
     i = 0
     for event, entry in etree.iterparse(f, events=("end",), tag="entry"):
         for gene in entry.findall(".//gene"):
-            name = gene.findall(".//name")
-            if name:
-                i += 1 
+            for name in gene.findall(".//name"):
+                if name is not None and name.get("type") == "ORF":
+                    i += 1
         entry.clear()
 
-    print("# of gene names: %s" % i)
+    print("# of ORF gene names: %s" % i)
