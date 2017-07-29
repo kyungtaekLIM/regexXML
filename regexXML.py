@@ -30,6 +30,7 @@ class Tag:
         element will be parsed. If the tag does not form a nested structure,
         set nested=False for speed.
         '''
+<<<<<<< HEAD
 
         if nested:
             return re.compile(
