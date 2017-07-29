@@ -1,7 +1,7 @@
 import re
 from collections import OrderedDict
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 
 
 class Attr(OrderedDict):
@@ -30,7 +30,6 @@ class Tag:
         element will be parsed. If the tag does not form a nested structure,
         set nested=False for speed.
         '''
-<<<<<<< HEAD
 
         if nested:
             return re.compile(
