@@ -32,9 +32,9 @@ uniprot_xml = """
  </entry>
 </uniprot>
 """
-
-gene_re = Tag("gene")
-name_re = Tag("name")
+# we know that tags are not nested by the same name.
+gene_re = Tag("gene", nested=False)
+name_re = Tag("name", nested=False)
 
 # search "gene" tag that comes first.
 gene = gene_re.search(uniprot_xml)
