@@ -1,7 +1,7 @@
 import re
 from collections import OrderedDict
 
-__version__ = "0.5.1"
+__version__ = "0.6.0"
 
 
 class Attr(OrderedDict):
@@ -18,12 +18,17 @@ class Attr(OrderedDict):
 
 class Tag:
 
-    def __init__(self, tag, nested=True):
+    def __init__(self, tag, nested=True, attr_only=False, attr_pattern=None):
         self.tag = tag
-        self.pattern = self.get_pattern(tag, nested=nested) 
+        self.pattern = self.get_pattern(
+            tag,
+            nested=nested,
+            attr_only=attr_only,
+            attr_pattern=attr_pattern
+        )
 
     @classmethod
-    def get_pattern(cls, tag, nested=True):
+    def get_pattern(cls, tag, nested=True, attr_only=False, attr_pattern=None):
         '''
         Return a regular expression object for parsing XML by a given tag name.
         If elements with a same tag exist on different levels, the innermost
@@ -31,16 +36,28 @@ class Tag:
         set nested=False for speed.
         '''
 
-        if nested:
-            return re.compile(
-                r"<%s(?: *| +(?P<attr>[^&<]*))(?:>(?P<inner>(?:(?!<%s[ >]).)*?)</%s>|></%s>|\/>)" % (tag, tag, tag, tag),
-                re.DOTALL
-            )
+        if attr_pattern:
+            re_string = r"<{0}\s+(?P<attr>%s[^&<]*|[^&<]+\s+%s[^&<]*)" % (attr_pattern, attr_pattern)
         else:
-           return re.compile(
-                r"<%s(?: *| +(?P<attr>[^&<]*))(?:>(?P<inner>.*?)</%s>|\/>)" % (tag, tag),
+            re_string = r"<{0}(?:\s*|\s+(?P<attr>[^&<]*))"
+
+        if attr_only:
+            re_string += r"(>|/>)"
+
+            return re.compile(
+                re_string.format(tag),
                 re.DOTALL
             )
+
+        if nested:
+            re_string += r"(?:>(?P<inner>(?:(?!<{0}[ >]).)*?)</{0}>|></{0}>|\/>)"
+        else:
+            re_string += r"(?:>(?P<inner>.*?)</{0}>|/>)"
+
+        return re.compile(
+            re_string.format(tag),
+            re.DOTALL
+        )
 
     def finditer_from_file(self, fileobj, chunk_size=300000):
 
@@ -68,7 +85,7 @@ class Tag:
             yield g
     
     def search_from_file(self, fileobj, chunk_size=300000):
-        for m in self.finditer_from_file(fileobj, chunk_size=300000):
+        for m in self.finditer_from_file(fileobj, chunk_size=chunk_size):
             return m
 
     def search(self, string):
