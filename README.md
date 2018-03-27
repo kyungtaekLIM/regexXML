@@ -30,12 +30,12 @@ name_re = Tag("name")
 entry_re = Tag("entry")
 ```
 
-If you know that the tags of interest are not nested by the same tag name, set `nested=False`. This will greatly improve speed.
+If you know that the tags of interest are nested by the same tag name, set `nested=True` at the cost of speed. The innermost element will be parsed.
 
 ```python
-gene_re = Tag("gene", nested=False)
-name_re = Tag("name", nested=False)
-entry_re = Tag("entry", nested=False)
+gene_re = Tag("gene", nested=True)
+name_re = Tag("name", nested=True)
+entry_re = Tag("entry", nested=True)
 ```
 
 To get a single tag match from an XML string, use `search`, which will give you a match object. Once you get a match object, group() will give you the matched string. Its attribute and inner-XML can be extracted by group("attr") and group("inner"), respectively.
@@ -155,14 +155,14 @@ for name in name_re.finditer(gene.group("inner")):
 
 ### 2) Parsing a huge XML file iteratively.
 
-[An example of parsing a huge Uniport XML file](https://github.com/kyungtaekLIM/regexXML/blob/master/examples/iterparse_uniprot.py) (5.9G) downloaded from  ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.xml.gz in a memory-efficient manner.
+[An example of parsing a huge Uniport XML file](https://github.com/kyungtaekLIM/regexXML/blob/master/examples/iterparse_uniprot.py) (6G) downloaded from  ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.xml.gz in a memory-efficient manner.
 
 I compared CPU time and maximum memory usage required to run this script with [the `lxml` equivalent](https://github.com/kyungtaekLIM/regexXML/blob/master/examples/iterparse_uniprot_lxml.py). `regexXML` is superior to `lxml`.
 
 | Library   | CPU Time (s) | Max Memory |
 | ----------| ------------ | ---------- |
-| regexXML  | 146          | 146M       |
-| lxml      | 176          | 338M       |
+| regexXML  | 177          | 0.2G       |
+| lxml      | 197          | 0.4G       |
 
 
 
@@ -175,9 +175,7 @@ I also compared CPU time and maximum memory usage with [the `lxml` equivalent](h
 
 | Library   | CPU Time (s) | Max Memory |
 | ----------| ------------ | ---------- |
-| regexXML  | 166          | 249M       |
-| lxml      | 225          | 339M       |
-
-
+| regexXML  | 176          | 0.2G       |
+| lxml      | 234          | 0.4G       |
 
 

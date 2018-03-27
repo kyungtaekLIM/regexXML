@@ -1,7 +1,7 @@
 import re
 from collections import OrderedDict
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 
 class Attr(OrderedDict):
@@ -18,7 +18,25 @@ class Attr(OrderedDict):
 
 class Tag:
 
-    def __init__(self, tag, nested=True, attr_only=False, attr_pattern=None):
+    def __init__(self, tag, nested=False, attr_only=False, attr_pattern=None):
+        '''
+        Tag object.
+
+        Parameters
+        ----------
+
+        tag : string
+            tag name
+        nested : boolean
+            True if elements with a same tag exist on different levels. Then the innermost
+            element will be parsed. False if not nested.
+        attr_only : boolean
+            True when to parse attributes only.
+        attr_pattern : regex pattern
+            If not None, tag elements with attributes including this regex pattern will be
+            parsed.
+        '''
+
         self.tag = tag
         self.pattern = self.get_pattern(
             tag,
@@ -28,13 +46,32 @@ class Tag:
         )
 
     @classmethod
-    def get_pattern(cls, tag, nested=True, attr_only=False, attr_pattern=None):
-        '''
+    def get_pattern(cls, tag, nested=False, attr_only=False, attr_pattern=None):
+        """
         Return a regular expression object for parsing XML by a given tag name.
-        If elements with a same tag exist on different levels, the innermost
-        element will be parsed. If the tag does not form a nested structure,
-        set nested=False for speed.
-        '''
+        See Tag class for parameters.
+
+        Parameters
+        ----------
+
+        tag : string
+            tag name
+        nested : boolean
+            True if elements with a same tag exist on different levels. Then the innermost
+            element will be parsed. False if not nested.
+        attr_only : boolean
+            True when to parse attributes only.
+        attr_pattern : regex pattern
+            If not None, tag elements with attributes including this regex pattern will be
+            parsed.
+
+
+        Returns
+        -------
+        o : regex object
+            A compiled Python regex object
+            
+        """
 
         if attr_pattern:
             re_string = r"<{0}\s+(?P<attr>%s[^&<]*|[^&<]+\s+%s[^&<]*)" % (attr_pattern, attr_pattern)
@@ -90,6 +127,3 @@ class Tag:
 
     def search(self, string):
         return self.pattern.search(string)
-
-
-
